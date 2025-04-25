@@ -4,12 +4,20 @@ Sebuah kamus kata / glosarium sederhana. Implementasi dengan **Flask**, **MySQL*
 
 ---
 
+## Fitur yang Diimplementasikan
+
+- Create dan delete data berbasis GUI web
+- Search dengan suport typo
+- Autocomplete saat mencoba search
+
+---
+
 ## Teknologi yang Digunakan
 
-- **Python 3**
-- **Flask**
-- **MySQL**
-- **Elasticsearch**
+- Python 3
+- Flask
+- MySQL
+- Elasticsearch
 
 ---
 
@@ -53,6 +61,24 @@ Edit file `config.py` sesuai konfigurasi lokal.
 ### Jalankan MySQL dan Elasticsearch
 
 Pastikan kedua service ini sudah aktif.
+
+### Siapkan autocomplete
+
+Kirim requst `PUT` ke `http://localhost:9200/glossary_index` dengan basic auth elasticsearch.
+```json
+{
+  "mappings": {
+    "properties": {
+      "term": {
+        "type": "search_as_you_type"
+      },
+      "definition": {
+        "type": "text"
+      }
+    }
+  }
+}
+```
 
 ### Jalankan aplikasi
 

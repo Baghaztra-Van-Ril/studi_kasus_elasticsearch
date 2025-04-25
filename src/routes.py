@@ -18,12 +18,17 @@ def add_glossary():
     if not term or not definition:
         return jsonify({"error": "Term dan definition tidak boleh kosong"}), 400
 
-    new_glossary = Glossary(term=term, definition=definition)
-    db.session.add(new_glossary)
-    db.session.commit()
+    try:
+        new_glossary = Glossary(term=term, definition=definition)
+        # Insert ke database
+        db.session.add(new_glossary)
+        db.session.commit()
 
-    # Index ke Elasticsearch
-    index_glossary(new_glossary.id, term, definition)
+        # Index ke Elasticsearch
+        index_glossary(new_glossary.id, term, definition)
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Gagal menyimpan data"}), 500
 
     return jsonify({"message": "Glossary tersimpan dan terindex", "id": new_glossary.id})
 
@@ -50,8 +55,8 @@ def search_glossary():
             "multi_match": {
                 "query": keyword,
                 "fields": ["term^4", "definition"],
-                # "fuzziness": "AUTO"
-                "fuzziness": 2
+                "fuzziness": "AUTO"
+                # "fuzziness": 2
             }
         }
     )
@@ -64,35 +69,60 @@ def delete_glossary(id):
     if not glossary:
         return jsonify({"error": "Data tidak ditemukan"}), 404
 
-    # Hapus dari database
-    db.session.delete(glossary)
-    db.session.commit()
-
-    # Hapus dari Elasticsearch
     try:
+        # Hapus dari database
+        db.session.delete(glossary)
+        db.session.commit()
+
+        # Hapus dari Elasticsearch
         es.delete(index="glossary_index", id=id)
     except Exception as e:
-        print(f"Gagal hapus di Elasticsearch: {e}")
+        db.session.rollback()
+        print(f"Gagal menghapus data: {e}")
+        return jsonify({"error": "Gagal menghapus data"}), 500
 
     return jsonify({"message": "Glossary berhasil dihapus", "id": id})
+
+@main.route('/autocomplete', methods=['GET'])
+def autocomplete_glossary():
+    keyword = request.args.get('q')
+    if not keyword:
+        return jsonify({"error": "Query tidak boleh kosong"}), 400
+
+    result = es.search(
+        index="glossary_index",
+        size=10,  # maksimal hasil suggestion
+        query={
+            "multi_match": {
+                "query": keyword,
+                "fields": ["term"],
+                "type": "bool_prefix"
+            }
+        }
+    )
+    hits = [hit["_source"]["term"] for hit in result['hits']['hits']]
+    return jsonify({"suggestions": hits})
+
 
 @main.route('/seed', methods=['POST'])
 def seed_data():
     n = int(request.args.get('n', 10))
 
     for _ in range(n):
-        term = fake.word()
-        definition = fake.sentence()
+        try:
+            term = fake.word()
+            definition = fake.sentence()
 
-        new_data = Glossary(term=term, definition=definition)
-        db.session.add(new_data)
-        db.session.flush()
+            new_data = Glossary(term=term, definition=definition)
+            db.session.add(new_data)
+            db.session.flush()
 
-        # Index ke Elasticsearch
-        es.index(index="glossary_index", id=new_data.id, document={
-            "term": term,
-            "definition": definition
-        })
+            # Index ke Elasticsearch
+            index_glossary(new_data.id, term, definition)
+        except Exception as e:
+            db.session.rollback()
+            print(f"Gagal menyimpan data: {e}")
+            return jsonify({"error": "Gagal menyimpan data"}), 500
 
     db.session.commit()
     return jsonify({"message": f"{n} data dummy berhasil dimasukkan."})
