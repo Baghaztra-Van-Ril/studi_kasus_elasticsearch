@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossary</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 p-6">
+  <div class="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Kamus Istilah</h1>
+    <small class="text-gray-500">Bagahztra Van Ril</small>
+
+    <!-- Tombol buka modal -->
+    <div class="text-right mb-4">
+      <button onclick="toggleModal(true)" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">+
+        Tambah Istilah</button>
+    </div>
+
+    <!-- Search: Input untuk mencari istilah dan tombol reset -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0 mb-6">
+      <input type="text" id="search-input" placeholder="Cari istilah..."
+        class="flex-1 border border-gray-300 p-2 rounded-md" onkeydown="if (event.key === 'Enter') searchData()" />
+      <button onclick="searchData()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Search</button>
+      <button onclick="resetSearch()"
+        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">Reset</button>
+    </div>
+
+    <!-- Hasil pencarian dan daftar istilah -->
+    <ul id="data-list" class="space-y-3"></ul>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h2 class="text-xl font-bold mb-4 text-center">Tambah Istilah Baru</h2>
+      <div class="space-y-4">
+        <input id="term" type="text" placeholder="Istilah" class="w-full border border-gray-300 p-2 rounded-md">
+        <input id="definition" type="text" placeholder="Definisi" class="w-full border border-gray-300 p-2 rounded-md">
+        <div class="flex justify-end space-x-2">
+          <button onclick="toggleModal(false)" class="px-4 py-2 bg-gray-400 text-white rounded-md">Batal</button>
+          <button onclick="createGlossary()"
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+
+</html>

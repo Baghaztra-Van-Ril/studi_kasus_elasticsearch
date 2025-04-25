@@ -1,4 +1,8 @@
 from . import es
 
-def index_data(id, content):
-    es.index(index="data_index", id=id, body={"content": content})
+def index_glossary(id, term, definition):
+    doc = {
+        "term": term,
+        "definition": definition
+    }
+    es.index(index="glossary_index", id=id, document=doc)

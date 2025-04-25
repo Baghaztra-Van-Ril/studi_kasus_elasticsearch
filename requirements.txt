@@ -2,3 +2,4 @@ Flask
 Flask-SQLAlchemy
 elasticsearch
 mysqlclient
+faker

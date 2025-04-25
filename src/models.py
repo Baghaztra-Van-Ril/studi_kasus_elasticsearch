@@ -1,5 +1,6 @@
 from . import db
 
-class Data(db.Model):
+class Glossary(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
+    term = db.Column(db.String(100), nullable=False)
+    definition = db.Column(db.Text, nullable=False)

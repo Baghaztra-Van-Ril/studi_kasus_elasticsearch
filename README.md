@@ -1,6 +1,6 @@
 # Studi Kasus Elasticsearch
 
-Implementasi sederhana integrasi dengan **Flask**, **MySQL**, dan **Elasticsearch**. Data disimpan di database MySQL dan diindeks ke Elasticsearch untuk fitur pencarian yang lebih cepat.
+Sebuah kamus kata / glosarium sederhana. Implementasi dengan **Flask**, **MySQL**, dan **Elasticsearch**. Data disimpan di database MySQL dan diindeks ke Elasticsearch untuk fitur pencarian yang lebih cepat.
 
 ---
 
@@ -19,9 +19,7 @@ Implementasi sederhana integrasi dengan **Flask**, **MySQL**, dan **Elasticsearc
 
 ```bash
 git clone https://github.com/Baghaztra-Van-Ril/studi_kasus_elasticsearch.git
-```
 
-```bash
 cd studi_kasus_elasticsearch
 ```
 
@@ -62,62 +60,57 @@ Pastikan kedua service ini sudah aktif.
 python app.py
 ```
 
-Aplikasi akan berjalan di `http://localhost:5000/`
+Aplikasi akan berjalan di `http://localhost:5000/`. GUI tersedia di browser.
 
 ---
 
 ## API Documentation
 
-### 🔸 POST `/data`
-
-**Deskripsi:** Menyimpan data ke database dan mengindeks ke Elasticsearch.
-
-**Request Body:**
-
-```json
-{
-  "content": "Isi data yang ingin disimpan"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Data tersimpan dan terindex",
-  "id": 1
-}
+### `POST /glossary`  
+Tambah glossary baru  
+  
+```bash
+curl -X POST http://localhost:5000/glossary -H "Content-Type: application/json" -d "{\"term\": \"istilah_baru\", \"definition\": \"penjelasan istilah\"}"
 ```
 
 ---
 
-### 🔸 GET `/search?q=keyword`
+### `GET /glossary`  
+Ambil semua glossary  
 
-**Deskripsi:** Melakukan pencarian data berdasarkan keyword di Elasticsearch.
-
-**Response:**
-
-```json
-[
-  {
-    "content": "Isi data yang cocok dengan keyword"
-  },
-  ...
-]
+```bash
+curl http://localhost:5000/glossary
 ```
 
 ---
 
-## 📊 Alur Kerja
-
+### `GET /search?q=keyword`  
+Cari glossary berdasarkan keyword  
+ 
+```bash
+curl "http://localhost:5000/search?q=keyword"
 ```
-[ User Input ]
-      ↓
-[ Simpan ke MySQL ]
-      ↓
-[ Index ke Elasticsearch ]
-      ↓
-[ Pencarian via Elasticsearch ]
-      ↓
-[ Hasil ditampilkan ]
+
+---
+
+### `DELETE /glossary/<id>`  
+Hapus glossary berdasarkan ID  
+
+```bash
+curl -X DELETE http://localhost:5000/glossary/1
+```
+
+---
+
+### `POST /seed`  
+Generate data dummy (dianggap 10 jika tanpa request arguments)
+
+Generate 10 data dummy 
+```bash
+curl -X POST "http://localhost:5000/seed"
+```
+
+Generate 100 data dummy 
+```bash
+curl -X POST "http://localhost:5000/seed?n=100"
 ```

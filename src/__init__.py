@@ -13,12 +13,12 @@ def create_app():
 
     global es
     es = Elasticsearch(
-    [app.config['ELASTICSEARCH_URL']],
-    basic_auth=(
-        app.config['ELASTICSEARCH_USERNAME'], 
-        app.config['ELASTICSEARCH_PASSWORD'],
+        [app.config['ELASTICSEARCH_URL']],
+        basic_auth=(
+            app.config['ELASTICSEARCH_USERNAME'], 
+            app.config['ELASTICSEARCH_PASSWORD'],
+        )
     )
-)
 
     from .routes import main
     app.register_blueprint(main)
