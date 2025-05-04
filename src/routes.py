@@ -55,8 +55,8 @@ def search_glossary():
             "multi_match": {
                 "query": keyword,
                 "fields": ["term^4", "definition"],
-                "fuzziness": "AUTO"
-                # "fuzziness": 2
+                # "fuzziness": "AUTO"
+                "fuzziness": 2
             }
         }
     )

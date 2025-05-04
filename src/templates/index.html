@@ -11,7 +11,6 @@
 <body class="bg-gray-50 p-6">
   <div class="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Kamus Istilah</h1>
-    <small class="text-gray-500">Bagahztra Van Ril</small>
 
     <!-- Tombol buka modal -->
     <div class="text-right mb-4">
@@ -49,7 +48,15 @@
       </div>
     </div>
   </div>
+  <!-- Footer -->
+  <footer class="mt-10 text-center text-gray-600 text-sm">
+    &copy; 2025 <a href="https://www.instagram.com/baghaztra/" target="_blank">Baghaztra</a>. All rights reserved.
+  </footer>
 
+  <script>
+    // Set the current year in the footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
   <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 

@@ -104,7 +104,7 @@ document.getElementById("search-input").addEventListener("input", function() {
         suggestionBox.innerHTML = ""; // Kosongkan saran yang lama
 
         if (data.suggestions.length === 0) {
-          suggestionBox.innerHTML = "<p class='text-gray-600 p-2'>Tidak ada saran ditemukan.</p>";
+          // suggestionBox.innerHTML = "<p class='text-gray-600 p-2'>Tidak ada saran ditemukan.</p>";
         } else {
           data.suggestions.forEach(suggestion => {
             suggestionBox.innerHTML += `
